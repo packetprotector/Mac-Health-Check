@@ -44,7 +44,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin/
 scriptVersion="2.1.0"
 
 # Client-side Log
-scriptLog="/var/log/org.churchofjesuschrist.log"
+scriptLog="/var/log/io.zaphq.log"
 
 # Elapsed Time
 SECONDS="0"
@@ -74,7 +74,7 @@ organizationScriptName="MHC"
 organizationOverlayiconURL=""
 
 # Organization's Color Scheme
-organizationColorScheme="weight=semibold,colour1=#ef9d51,colour2=#ef7951"
+organizationColorScheme="weight=semibold,colour1=#000000,colour2=#2e2e2e"
 
 # Organization's Kerberos Realm (leave blank to disable check)
 kerberosRealm=""
@@ -114,7 +114,7 @@ completionTimer="60"
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Organization's Client-side Jamf Pro Variables
-jamfProVariables="org.churchofjesuschrist.jamfprovariables.plist"
+jamfProVariables="io.zaphq.jamfprovariables.plist"
 
 # Property List File
 plistFilepath="/Library/Managed Preferences/${jamfProVariables}"
@@ -253,21 +253,21 @@ wiFiIpAddress=$( echo "$activeServices" | /usr/bin/sed '/^$/d' | head -n 1)
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# Palo Alto Networks GlobalProtect VPN IP address
+# Jamf Trust VPN IP address
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-globalProtectTest="/Applications/GlobalProtect.app"
+jamfTrustTest="/Applications/Jamf Trust.app"
 
-if [[ -e "${globalProtectTest}" ]] ; then
+if [[ -e "${jamfTrustTest}" ]] ; then
     interface=$( ifconfig | grep -B1 "10\." | grep -oE '10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1 )
     if [[ -z "$interface" ]]; then
-        globalProtectStatus="Inactive"
+        jamfTrustStatus="Inactive"
     else
-        globalProtectIP=$( ifconfig | grep "inet ${interface}" | awk '{ print $2 }' )
-        globalProtectStatus="${globalProtectIP}"
+        jamfTrustIP=$( ifconfig | grep "inet ${interface}" | awk '{ print $2 }' )
+        jamfTrustStatus="${jamfTrustIP}"
     fi
 else
-    globalProtectStatus="GlobalProtect is NOT installed"
+    jamfTrustStatus="Jamf Trust is NOT installed"
 fi
 
 
@@ -311,7 +311,7 @@ fi
 curl -o "/var/tmp/overlayicon.png" "${organizationOverlayiconURL}" --silent --show-error --fail
 if [[ "$?" -ne 0 ]]; then
     echo "Error: Failed to download the overlayicon from '${brandingImageURL}'."
-    overlayicon="/System/Library/CoreServices/Finder.app"
+    overlayicon="/System/Library/CoreServices/Apple Diagnostics.app"
 else
     overlayicon="/var/tmp/overlayicon.png"
 fi
@@ -322,14 +322,15 @@ fi
 # IT Support Variables
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-supportTeamName="IT Support"
-supportTeamPhone="+1 (801) 555-1212"
-supportTeamEmail="rescue@domain.org"
-supportTeamWebsite="https://support.domain.org"
-supportTeamHyperlink="[${supportTeamWebsite}](${supportTeamWebsite})"
-supportKB="KB8675309"
-infobuttonaction="https://servicenow.domain.org/support?id=kb_article_view&sysparm_article=${supportKB}"
-supportKBURL="[${supportKB}](${infobuttonaction})"
+supportTeamName="Security Team"
+supportTeamPhone=""
+supportTeamEmail="security@strike.me"
+supportTeamWebsite="https://zapsolutionsinc.enterprise.slack.com/archives/C04F9M0AYKG"
+supportTeamChannel="#help-it-security"
+supportTeamHyperlink="[${supportTeamChannel}](${supportTeamWebsite})"
+supportCanvas="Canvas Resources"
+infobuttonaction="https://zapsolutionsinc.enterprise.slack.com/docs/TRAGA17NJ/F097Z79402K"
+supportCanvasURL="[${supportCanvas}](${infobuttonaction})"
 
 
 
@@ -337,7 +338,7 @@ supportKBURL="[${supportKB}](${infobuttonaction})"
 # Help Message Variables
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-helpmessage="For assistance, please contact: **${supportTeamName}**<br>- **Telephone:** ${supportTeamPhone}<br>- **Email:** ${supportTeamEmail}<br>- **Website:** ${supportTeamWebsite}<br>- **Knowledge Base Article:** ${supportKBURL}<br><br>**User Information:**<br>- **Full Name:** ${loggedInUserFullname}<br>- **User Name:** ${loggedInUser}<br>- **User ID:** ${loggedInUserID}<br>- **Secure Token:** ${secureToken}<br>- **Location Services:** ${locationServicesStatus}<br>- **Microsoft OneDrive Sync Date:** ${oneDriveSyncDate}<br>- **Platform SSOe:** ${platformSSOeResult}<br><br>**Computer Information:**<br>- **macOS:** ${osVersion} (${osBuild})<br>- **Computer Name:** ${computerName}<br>- **Serial Number:** ${serialNumber}<br>- **Wi-Fi:** ${ssid}<br>- ${wiFiIpAddress}<br>- **VPN IP:** ${globalProtectStatus}<br><br>**Jamf Pro Information:**<br>- **Site:** ${jamfProSiteName}"
+helpmessage="For assistance, please contact: **${supportTeamName}**<br>- **Email:** ${supportTeamEmail}<br>- **Website:** ${supportTeamHyperlink}<br>- **Canvas Resource:** ${supportCanvasURL}<br><br>**User Information:**<br>- **Full Name:** ${loggedInUserFullname}<br>- **User Name:** ${loggedInUser}<br>- **User ID:** ${loggedInUserID}<br>- **Secure Token:** ${secureToken}<br>- **Location Services:** ${locationServicesStatus}<br>- **Microsoft OneDrive Sync Date:** ${oneDriveSyncDate}<br>- **Platform SSOe:** ${platformSSOeResult}<br><br>**Computer Information:**<br>- **macOS:** ${osVersion} (${osBuild})<br>- **Computer Name:** ${computerName}<br>- **Serial Number:** ${serialNumber}<br>- **Wi-Fi:** ${ssid}<br>- ${wiFiIpAddress}<br>- **VPN IP:** ${jamfTrustStatus}<br><br>**Jamf Pro Information:**<br>- **Site:** ${jamfProSiteName}"
 
 helpimage="qr=${infobuttonaction}"
 
@@ -360,7 +361,7 @@ dialogJSON='
     "message" : "none",
     "iconsize" : "198.0",
     "infobox" : "**User:** '"{userfullname}"'<br><br>**Computer Model:** '"{computermodel}"'<br><br>**Serial Number:** '"{serialnumber}"' ",
-    "infobuttontext" : "'"${supportKB}"'",
+    "infobuttontext" : "'"${supportCanvas}"'",
     "infobuttonaction" : "'"${infobuttonaction}"'",
     "button1text" : "Wait",
     "button1disabled" : "true",
@@ -386,10 +387,10 @@ dialogJSON='
         {"title" : "Apple Push Notification service", "subtitle" : "Validate communication between Apple, Jamf Pro and your Mac", "icon" : "SF=10.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"},
         {"title" : "Jamf Pro Check-In", "subtitle" : "Your Mac should check-in with the Jamf Pro MDM server multiple times each day", "icon" : "SF=11.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"},
         {"title" : "Jamf Pro Inventory", "subtitle" : "Your Mac should submit its inventory to the Jamf Pro MDM server daily", "icon" : "SF=12.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"},
-        {"title" : "BeyondTrust Privilege Management", "subtitle" : "Privilege Management for Mac pairs powerful least-privilege management and application control", "icon" : "SF=13.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"},
-        {"title" : "Cisco Umbrella", "subtitle" : "Cisco Umbrella combines multiple security functions so you can extend data protection anywhere.", "icon" : "SF=14.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"},
-        {"title" : "CrowdStrike Falcon", "subtitle" : "Technology, intelligence, and expertise come together in CrowdStrike Falcon to deliver security that works.", "icon" : "SF=15.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"},
-        {"title" : "Palo Alto GlobalProtect", "subtitle" : "Virtual Private Network (VPN) connection to Church headquarters", "icon" : "SF=16.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"},
+        {"title" : "Jamf Connect", "subtitle" : "Privilege Management for Mac pairs powerful least-privilege management and application control", "icon" : "SF=13.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"},
+        {"title" : "Jamf Protect", "subtitle" : "Jamf Protect is a comprehensive security solution for Mac devices", "icon" : "SF=14.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"},
+        {"title" : "Elastic Security", "subtitle" : "Detect, investigate, and respond to security threats and incidents", "icon" : "SF=15.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"},
+        {"title" : "Jamf Trust", "subtitle" : "Zero Trust Network Access (ZTNA) ensures that access to sensitive data and work apps is only made available to authorized users", "icon" : "SF=16.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"},
         {"title" : "Network Quality Test", "subtitle" : "Various networking-related tests of your Mac’s Internet connection", "icon" : "SF=17.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"},
         {"title" : "Computer Inventory", "subtitle" : "The listing of your Mac’s apps and settings", "icon" : "SF=18.circle.fill,'"${organizationColorScheme}"'", "status" : "pending", "statustext" : "Pending …"}
     ]
@@ -667,7 +668,7 @@ function quitScript() {
 
     quitOut "Exiting …"
 
-    notice "${localAdminWarning}User: ${loggedInUserFullname} (${loggedInUser}) [${loggedInUserID}] ${loggedInUserGroupMembership}; ${bootstrapTokenStatus}; sudo Check: ${sudoStatus}; sudoers: ${sudoAllLines}; Kerberos SSOe: ${kerberosSSOeResult}; Platform SSOe: ${platformSSOeResult}; Location Services: ${locationServicesStatus}; SSH: ${sshStatus}; Microsoft OneDrive Sync Date: ${oneDriveSyncDate}; Time Machine Backup Date: ${tmStatus} ${tmLastBackup}; Battery Cycle Count: ${batteryCycleCount}; Wi-Fi: ${ssid}; ${wiFiIpAddress}; VPN IP: ${globalProtectStatus}; ${networkTimeServer}; Jamf Pro Computer ID: ${jamfProID}; Site: ${jamfProSiteName}"
+    notice "${localAdminWarning}User: ${loggedInUserFullname} (${loggedInUser}) [${loggedInUserID}] ${loggedInUserGroupMembership}; ${bootstrapTokenStatus}; sudo Check: ${sudoStatus}; sudoers: ${sudoAllLines}; Kerberos SSOe: ${kerberosSSOeResult}; Platform SSOe: ${platformSSOeResult}; Location Services: ${locationServicesStatus}; SSH: ${sshStatus}; Microsoft OneDrive Sync Date: ${oneDriveSyncDate}; Time Machine Backup Date: ${tmStatus} ${tmLastBackup}; Battery Cycle Count: ${batteryCycleCount}; Wi-Fi: ${ssid}; ${wiFiIpAddress}; VPN IP: ${jamfTrustStatus}; ${networkTimeServer}; Jamf Pro Computer ID: ${jamfProID}; Site: ${jamfProSiteName}"
 
     if [[ -n "${overallHealth}" ]]; then
         dialogUpdate "icon: SF=xmark.circle.fill,weight=bold,colour1=#BB1717,colour2=#F31F1F"
@@ -712,7 +713,7 @@ function quitScript() {
     rm -rf "${dialogJSONFile}"
 
     # Remove overlay icon
-    if [[ -f "${overlayicon}" ]] && [[ "${overlayicon}" != "/System/Library/CoreServices/Finder.app" ]]; then
+    if [[ -f "${overlayicon}" ]] && [[ "${overlayicon}" != "/System/Library/CoreServices/Apple Diagnostics.app" ]]; then
         rm -rf "${overlayicon}"
     fi
 
@@ -776,7 +777,7 @@ fi
 # Pre-flight Check: Logging Preamble
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-preFlight "\n\n###\n# $humanReadableScriptName (${scriptVersion})\n# https://snelson.us/mhc\n###\n"
+preFlight "\n\n###\n# $humanReadableScriptName (${scriptVersion})\n###\n"
 preFlight "Initiating …"
 
 
